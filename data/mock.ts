@@ -1,4 +1,4 @@
-import { Conversation, Message, RecommendedUser, User } from '@/types';
+import { Conversation, Message, User } from '@/types';
 
 export const currentUser: User = {
   id: 'me', username: 'alex', displayName: 'Alex', avatar: 'A',
@@ -13,13 +13,6 @@ export const people: User[] = [
   { id: 'sam', username: 'sam', displayName: 'Sam Rivera', avatar: 'SR', bio: 'Open source, privacy, and a quieter internet.', interests: ['Open Source', 'Privacy', 'P2P'], lookingFor: ['Maintainers', 'Developers'] },
   { id: 'david', username: 'david', displayName: 'David Kim', avatar: 'DK', bio: 'Engineer working on tools for small teams.', interests: ['Developer Tools', 'Local-first', 'Music'], lookingFor: ['Designers', 'Developers'] },
   { id: 'nora', username: 'nora', displayName: 'Nora Chen', avatar: 'NC', bio: 'Researching identity and trust on the internet.', interests: ['Identity', 'Research', 'Communities'], lookingFor: ['Researchers', 'Founders'] },
-];
-
-export const recommendations: RecommendedUser[] = [
-  { user: people[0], reason: 'You both care about decentralized social.', sharedInterests: ['AI', 'Startups'], suggestedTopic: 'What would a calmer social internet look like?' },
-  { user: people[1], reason: 'She is looking to meet AI founders.', sharedInterests: ['AI', 'Products'], suggestedTopic: 'How can AI products feel more human?' },
-  { user: people[2], reason: 'You share 3 interests.', sharedInterests: ['Open Source', 'Privacy', 'P2P'], suggestedTopic: 'Should AI agents have their own identity?' },
-  { user: people[4], reason: 'You are both exploring user-owned identity.', sharedInterests: ['Identity', 'Communities'], suggestedTopic: 'What does trust look like without real names?' },
 ];
 
 const now = Date.now();

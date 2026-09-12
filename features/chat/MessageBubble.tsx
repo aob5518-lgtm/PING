@@ -3,26 +3,29 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Avatar } from '@/components/ui';
 import { ThemeColors } from '@/constants/theme';
 import { useTheme } from '@/features/theme-context';
+import { useI18n } from '@/features/i18n-context';
 import { Message, User } from '@/types';
 import { formatMessageTime } from '@/utils/date';
 
-type Props = { message: Message; replied?: Message; sender?: User; isGroup: boolean; onLongPress: () => void };
+type Props = { message: Message; replied?: Message; sender?: User; isGroup: boolean; showReadReceipts: boolean; onLongPress: () => void };
 
-export function MessageBubble({ message, replied, sender, isGroup, onLongPress }: Props) {
+export function MessageBubble({ message, replied, sender, isGroup, showReadReceipts, onLongPress }: Props) {
   const { colors } = useTheme();
+  const { t, locale } = useI18n();
   const styles = createStyles(colors);
   const mine = message.senderId === 'me';
-  return <Pressable accessibilityRole="button" accessibilityLabel={`${mine ? 'Your' : sender?.displayName ?? 'Received'} message, ${message.content}`} accessibilityHint="Long press for message actions" onLongPress={onLongPress} delayLongPress={320} style={[styles.row, mine && styles.mineRow]}>
+  const senderName = sender?.displayName ?? t('chat.unknownUser');
+  return <Pressable accessibilityRole="button" accessibilityLabel={mine ? t('chat.yourMessage', { content: message.content }) : t('chat.receivedMessage', { name: senderName, content: message.content })} accessibilityHint={t('chat.longPress')} onLongPress={onLongPress} delayLongPress={320} style={[styles.row, mine && styles.mineRow]}>
     {!mine && isGroup && <Avatar label={sender?.avatar ?? '?'} size={28} />}
     <View style={styles.messageColumn}>
-      {!mine && isGroup && <Text style={styles.sender}>{sender?.displayName ?? 'Unknown user'}</Text>}
+      {!mine && isGroup && <Text style={styles.sender}>{senderName}</Text>}
       <View style={[styles.bubble, mine ? styles.mine : styles.other]}>
         {replied && <View style={styles.reply}><Text numberOfLines={1} style={[styles.replyText, mine && styles.mineSecondary]}>{replied.content}</Text></View>}
-        {message.type === 'image' && <View style={styles.image}><Ionicons name="image-outline" size={34} color={mine ? colors.inverseText : colors.text} /><Text style={[styles.imageText, mine && styles.mineText]}>Image preview</Text></View>}
+        {message.type === 'image' && <View style={styles.image}><Ionicons name="image-outline" size={34} color={mine ? colors.inverseText : colors.text} /><Text style={[styles.imageText, mine && styles.mineText]}>{t('chat.image')}</Text></View>}
         {message.type === 'file' && <View style={styles.file}><Ionicons name="document-outline" size={22} color={mine ? colors.inverseText : colors.text} /><Text style={[styles.text, mine && styles.mineText]}>{message.content}</Text></View>}
         {message.type === 'text' && <Text style={[styles.text, mine && styles.mineText]}>{message.content}</Text>}
       </View>
-      <Text style={[styles.time, mine && styles.mineTime]}>{formatMessageTime(message.createdAt)}{mine ? '  ✓' : ''}</Text>
+      <Text style={[styles.time, mine && styles.mineTime]}>{formatMessageTime(message.createdAt, locale)}{mine && showReadReceipts && message.status === 'read' ? '  ✓' : ''}</Text>
     </View>
   </Pressable>;
 }

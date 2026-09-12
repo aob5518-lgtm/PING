@@ -39,10 +39,3 @@ export interface Group {
   memberIds: string[];
   ownerId: string;
 }
-
-export interface RecommendedUser {
-  user: User;
-  reason: string;
-  sharedInterests: string[];
-  suggestedTopic: string;
-}

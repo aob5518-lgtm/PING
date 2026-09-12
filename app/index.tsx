@@ -1,17 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { Modal, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { PrimaryButton, SecondaryButton } from '@/components/ui';
-import { radius, spacing, ThemeColors } from '@/constants/theme';
+import { useEffect } from 'react';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { PrimaryButton } from '@/components/ui';
+import { spacing, ThemeColors } from '@/constants/theme';
 import { useApp } from '@/features/app-context';
+import { useI18n } from '@/features/i18n-context';
 import { useTheme } from '@/features/theme-context';
 
 export default function WelcomeScreen() {
   const { hydrated, hasIdentity } = useApp();
   const { colors } = useTheme();
+  const { t } = useI18n();
   const styles = createStyles(colors);
-  const [comingSoon, setComingSoon] = useState(false);
   useEffect(() => {
     if (hydrated && hasIdentity) router.replace('/(tabs)/chats');
   }, [hydrated, hasIdentity]);
@@ -20,18 +21,14 @@ export default function WelcomeScreen() {
     <SafeAreaView style={styles.screen}>
       <View style={styles.brand}><View style={styles.logo}><Ionicons name="chatbubble-ellipses" size={27} color={colors.inverseText} /></View><Text style={styles.wordmark}>Ping</Text></View>
       <View style={styles.hero}>
-        <Text style={styles.eyebrow}>A calmer way to connect</Text>
-        <Text style={styles.title}>Talk freely.</Text>
-        <Text style={styles.subtitle}>Meet thoughtful people and start real conversations — without a phone number or real-name verification.</Text>
+        <Text style={styles.eyebrow}>{t('welcome.eyebrow')}</Text>
+        <Text style={styles.title}>{t('welcome.title')}</Text>
+        <Text style={styles.subtitle}>{t('welcome.subtitle')}</Text>
       </View>
       <View style={styles.actions}>
-        <PrimaryButton title="Create Identity" onPress={() => router.push('/create-identity')} />
-        <SecondaryButton title="Import Identity" onPress={() => setComingSoon(true)} />
-        <Text style={styles.privacy}><Ionicons name="shield-checkmark-outline" size={14} />  Your identity belongs to you.</Text>
+        <PrimaryButton title={t('welcome.create')} onPress={() => router.push('/create-identity')} />
+        <Text style={styles.privacy}><Ionicons name="shield-checkmark-outline" size={14} />  {t('welcome.privacy')}</Text>
       </View>
-      <Modal visible={comingSoon} transparent animationType="fade" onRequestClose={() => setComingSoon(false)}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Close dialog" style={styles.overlay} onPress={() => setComingSoon(false)}><View style={styles.dialog}><Ionicons name="sparkles-outline" size={28} color={colors.text} /><Text style={styles.dialogTitle}>Coming soon</Text><Text style={styles.dialogText}>Identity import will arrive in the next sprint.</Text><PrimaryButton title="Got it" onPress={() => setComingSoon(false)} /></View></Pressable>
-      </Modal>
     </SafeAreaView>
   );
 }
@@ -47,7 +44,4 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   subtitle: { color: colors.secondary, fontSize: 18, lineHeight: 28, marginTop: 18, maxWidth: 500 },
   actions: { gap: 12 },
   privacy: { color: colors.secondary, fontSize: 13, textAlign: 'center', marginTop: 8 },
-  overlay: { flex: 1, backgroundColor: colors.overlay, alignItems: 'center', justifyContent: 'center', padding: 28 },
-  dialog: { width: '100%', maxWidth: 360, backgroundColor: colors.surface, borderRadius: radius.lg, padding: 24, gap: 14 },
-  dialogTitle: { fontSize: 22, fontWeight: '700', color: colors.text }, dialogText: { color: colors.secondary, fontSize: 15, lineHeight: 22, marginBottom: 6 },
 });

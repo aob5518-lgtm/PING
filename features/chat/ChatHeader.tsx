@@ -2,30 +2,28 @@ import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Avatar, IconButton } from '@/components/ui';
 import { ThemeColors } from '@/constants/theme';
+import { useI18n } from '@/features/i18n-context';
 import { useTheme } from '@/features/theme-context';
 import { Conversation } from '@/types';
 
 type Props = {
   conversation: Conversation;
   username?: string;
-  onOpenProfile: () => void;
-  onCall: () => void;
-  onMore: () => void;
+  onOpenProfile?: () => void;
 };
 
-export function ChatHeader({ conversation, username, onOpenProfile, onCall, onMore }: Props) {
+export function ChatHeader({ conversation, username, onOpenProfile }: Props) {
   const { colors } = useTheme();
+  const { t } = useI18n();
   const styles = createStyles(colors);
   const isGroup = conversation.type === 'group';
   return <View style={styles.header}>
-    <IconButton accessibilityLabel="Go back" name="chevron-back" onPress={() => router.back()} />
+    <IconButton accessibilityLabel={t('chat.back')} name="chevron-back" onPress={() => router.back()} />
     <Avatar label={conversation.avatar} size={40} />
-    <Pressable accessibilityRole="button" accessibilityLabel={`Open ${conversation.title} details`} style={styles.identity} onPress={onOpenProfile}>
+    {onOpenProfile ? <Pressable accessibilityRole="button" accessibilityLabel={t('chat.openDetails', { name: conversation.title })} style={styles.identity} onPress={onOpenProfile}>
       <Text style={styles.name}>{conversation.title}</Text>
-      <Text style={styles.sub}>{isGroup ? `${conversation.participantIds.length} members` : username ? `@${username}` : 'User unavailable'}</Text>
-    </Pressable>
-    <IconButton accessibilityLabel="Start call" name="call-outline" onPress={onCall} />
-    <IconButton accessibilityLabel="More conversation options" name="ellipsis-horizontal" onPress={onMore} />
+      <Text style={styles.sub}>{username ? `@${username}` : t('chat.userUnavailable')}</Text>
+    </Pressable> : <View style={styles.identity}><Text style={styles.name}>{conversation.title}</Text><Text style={styles.sub}>{isGroup ? t('chat.members', { count: conversation.participantIds.length }) : t('chat.userUnavailable')}</Text></View>}
   </View>;
 }
 

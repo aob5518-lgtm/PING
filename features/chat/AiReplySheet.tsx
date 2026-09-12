@@ -2,16 +2,18 @@ import { Ionicons } from '@expo/vector-icons';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { ThemeColors } from '@/constants/theme';
 import { useTheme } from '@/features/theme-context';
+import { useI18n } from '@/features/i18n-context';
 
 export function AiReplySheet({ visible, suggestions, onClose, onSelect }: { visible: boolean; suggestions: string[]; onClose: () => void; onSelect: (value: string) => void }) {
   const { colors } = useTheme();
+  const { t } = useI18n();
   const styles = createStyles(colors);
   return <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-    <Pressable accessibilityRole="button" accessibilityLabel="Close suggested replies" style={styles.overlay} onPress={onClose}>
+    <Pressable accessibilityRole="button" accessibilityLabel={t('chat.closeSuggestions')} style={styles.overlay} onPress={onClose}>
       <View style={styles.sheet}>
-        <View style={styles.handle} /><View style={styles.titleRow}><Ionicons name="sparkles" size={19} color={colors.text} /><Text style={styles.title}>Suggested replies</Text></View>
-        <Text style={styles.note}>Ping will add your choice to the composer, never send it for you.</Text>
-        {suggestions.map(item => <Pressable accessibilityRole="button" accessibilityLabel={`Use reply: ${item}`} key={item} style={styles.suggestion} onPress={() => onSelect(item)}><Text style={styles.suggestionText}>{item}</Text><Ionicons name="add-circle-outline" size={20} color={colors.text} /></Pressable>)}
+        <View style={styles.handle} /><View style={styles.titleRow}><Ionicons name="sparkles" size={19} color={colors.text} /><Text style={styles.title}>{t('chat.suggestions')}</Text></View>
+        <Text style={styles.note}>{t('chat.suggestionNote')}</Text>
+        {suggestions.map(item => <Pressable accessibilityRole="button" accessibilityLabel={t('chat.useReply', { reply: item })} key={item} style={styles.suggestion} onPress={() => onSelect(item)}><Text style={styles.suggestionText}>{item}</Text><Ionicons name="add-circle-outline" size={20} color={colors.text} /></Pressable>)}
       </View>
     </Pressable>
   </Modal>;
