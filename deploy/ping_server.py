@@ -13,7 +13,7 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
     request_queue_size = 128
 
 
-class MiloHandler(SimpleHTTPRequestHandler):
+class PingHandler(SimpleHTTPRequestHandler):
     def send_head(self):
         requested_path = self.translate_path(self.path)
         if not os.path.exists(requested_path):
@@ -34,8 +34,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=80)
     args = parser.parse_args()
-    server = ThreadingHTTPServer(("0.0.0.0", args.port), MiloHandler)
-    print("Milo listening on port {}".format(args.port), flush=True)
+    server = ThreadingHTTPServer(("0.0.0.0", args.port), PingHandler)
+    print("Ping listening on port {}".format(args.port), flush=True)
     server.serve_forever()
 
 

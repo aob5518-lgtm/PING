@@ -22,18 +22,22 @@ export const recommendations: RecommendedUser[] = [
   { user: people[4], reason: 'You are both exploring user-owned identity.', sharedInterests: ['Identity', 'Communities'], suggestedTopic: 'What does trust look like without real names?' },
 ];
 
+const now = Date.now();
+const minutesAgo = (minutes: number) => now - minutes * 60_000;
+const daysAgo = (days: number) => now - days * 86_400_000;
+
 export const initialConversations: Conversation[] = [
-  { id: 'alice-chat', type: 'direct', title: 'Alice', avatar: 'AW', participantIds: ['me', 'alice'], lastMessage: 'Are you free tonight?', updatedAt: '14:20', unreadCount: 2 },
-  { id: 'ai-builders', type: 'group', title: 'AI Builders', avatar: 'AI', participantIds: ['me', 'alice', 'mia', 'sam'], lastMessage: 'Jack: I think this approach could work.', updatedAt: '13:45', unreadCount: 0 },
-  { id: 'david-chat', type: 'direct', title: 'David', avatar: 'DK', participantIds: ['me', 'david'], lastMessage: '👍', updatedAt: 'Yesterday', unreadCount: 0 },
+  { id: 'alice-chat', type: 'direct', title: 'Alice', avatar: 'AW', participantIds: ['me', 'alice'], lastMessage: 'Are you free tonight?', updatedAt: minutesAgo(8), unreadCount: 2 },
+  { id: 'ai-builders', type: 'group', title: 'AI Builders', avatar: 'AI', participantIds: ['me', 'alice', 'mia', 'sam'], lastMessage: 'Jack: I think this approach could work.', updatedAt: minutesAgo(43), unreadCount: 0 },
+  { id: 'david-chat', type: 'direct', title: 'David', avatar: 'DK', participantIds: ['me', 'david'], lastMessage: '👍', updatedAt: daysAgo(1), unreadCount: 0 },
 ];
 
 export const initialMessages: Message[] = [
-  { id: 'm1', conversationId: 'alice-chat', senderId: 'alice', type: 'text', content: 'Hey! I saw that you’re interested in decentralized social too.', createdAt: '14:16', status: 'read' },
-  { id: 'm2', conversationId: 'alice-chat', senderId: 'me', type: 'text', content: 'Yes — especially products that hide the complexity.', createdAt: '14:18', status: 'read' },
-  { id: 'm3', conversationId: 'alice-chat', senderId: 'alice', type: 'text', content: 'Are you free tonight?', createdAt: '14:20', status: 'read' },
-  { id: 'm4', conversationId: 'alice-chat', senderId: 'alice', type: 'image', content: 'Shared image', createdAt: '14:20', status: 'read' },
-  { id: 'g1', conversationId: 'ai-builders', senderId: 'mia', type: 'text', content: 'Could onboarding work without asking for email?', createdAt: '13:40', status: 'read' },
-  { id: 'g2', conversationId: 'ai-builders', senderId: 'alice', type: 'text', content: 'I think this approach could work.', createdAt: '13:45', status: 'read' },
-  { id: 'd1', conversationId: 'david-chat', senderId: 'david', type: 'text', content: '👍', createdAt: 'Yesterday', status: 'read' },
+  { id: 'm1', conversationId: 'alice-chat', senderId: 'alice', type: 'text', content: 'Hey! I saw that you’re interested in decentralized social too.', createdAt: minutesAgo(12), status: 'read' },
+  { id: 'm2', conversationId: 'alice-chat', senderId: 'me', type: 'text', content: 'Yes — especially products that hide the complexity.', createdAt: minutesAgo(10), status: 'read' },
+  { id: 'm3', conversationId: 'alice-chat', senderId: 'alice', type: 'text', content: 'Are you free tonight?', createdAt: minutesAgo(8), status: 'read' },
+  { id: 'm4', conversationId: 'alice-chat', senderId: 'alice', type: 'image', content: 'Shared image', createdAt: minutesAgo(8), status: 'read' },
+  { id: 'g1', conversationId: 'ai-builders', senderId: 'mia', type: 'text', content: 'Could onboarding work without asking for email?', createdAt: minutesAgo(48), status: 'read' },
+  { id: 'g2', conversationId: 'ai-builders', senderId: 'alice', type: 'text', content: 'I think this approach could work.', createdAt: minutesAgo(43), status: 'read' },
+  { id: 'd1', conversationId: 'david-chat', senderId: 'david', type: 'text', content: '👍', createdAt: daysAgo(1), status: 'read' },
 ];

@@ -1,12 +1,21 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { AppProvider } from '@/features/app-context';
-import { colors } from '@/constants/theme';
+import { ThemeProvider, useTheme } from '@/features/theme-context';
 
 export default function RootLayout() {
   return (
-    <AppProvider>
-      <StatusBar style="dark" />
+    <ThemeProvider>
+      <AppProvider><Navigator /></AppProvider>
+    </ThemeProvider>
+  );
+}
+
+function Navigator() {
+  const { colors, isDark } = useTheme();
+  return (
+    <>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
       <Stack screenOptions={{
         headerShadowVisible: false,
         headerStyle: { backgroundColor: colors.background },
@@ -23,8 +32,8 @@ export default function RootLayout() {
         <Stack.Screen name="create-group" options={{ title: 'Create group', presentation: 'modal' }} />
         <Stack.Screen name="settings" options={{ title: 'Settings' }} />
         <Stack.Screen name="edit-profile" options={{ title: 'Edit profile', presentation: 'modal' }} />
-        <Stack.Screen name="identity-wallet" options={{ title: 'Identity & Wallet' }} />
+        <Stack.Screen name="identity-wallet" options={{ title: 'Identity' }} />
       </Stack>
-    </AppProvider>
+    </>
   );
 }

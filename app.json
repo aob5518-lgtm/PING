@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "Milo",
-    "slug": "milo",
+    "name": "Ping",
+    "slug": "ping",
     "version": "0.1.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "light",
-    "scheme": "milo",
+    "userInterfaceStyle": "automatic",
+    "scheme": "ping",
     "plugins": ["expo-router"],
-    "ios": { "supportsTablet": true, "bundleIdentifier": "social.milo.app" },
-    "android": { "package": "social.milo.app", "adaptiveIcon": { "backgroundColor": "#F4F2ED" } },
+    "ios": { "supportsTablet": true, "bundleIdentifier": "social.ping.app" },
+    "android": { "package": "social.ping.app", "adaptiveIcon": { "backgroundColor": "#FFFFFF" } },
     "web": { "bundler": "metro" },
     "experiments": { "typedRoutes": true }
   }

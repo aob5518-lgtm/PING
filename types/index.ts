@@ -17,7 +17,7 @@ export interface Conversation {
   avatar: string;
   participantIds: string[];
   lastMessage: string;
-  updatedAt: string;
+  updatedAt: number;
   unreadCount: number;
 }
 
@@ -27,7 +27,7 @@ export interface Message {
   senderId: string;
   type: 'text' | 'image' | 'file';
   content: string;
-  createdAt: string;
+  createdAt: number;
   status: 'sending' | 'sent' | 'read';
   replyTo?: string;
 }

@@ -1,5 +1,5 @@
 {
-  "name": "milo",
+  "name": "ping",
   "version": "0.1.0",
   "private": true,
   "main": "expo-router/entry",
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
+    "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "^57.0.0",
     "expo-clipboard": "~57.0.2",
     "expo-constants": "~57.0.18",
