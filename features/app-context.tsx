@@ -2,6 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import { Conversation, Group, Message, User } from '@/types';
 import { currentUser as mockCurrentUser, initialConversations, initialMessages, people } from '@/data/mock';
+import { createId } from '@/utils/create-id';
+import { warnStorage } from '@/utils/storage-warning';
 
 const STORAGE = {
   identity: '@ping/identity',
@@ -29,9 +31,12 @@ type AppContextValue = {
 
 const AppContext = createContext<AppContextValue>(undefined as unknown as AppContextValue);
 const sortConversations = (items: Conversation[]) => [...items].sort((a, b) => b.updatedAt - a.updatedAt);
-const parseStored = <T,>(value: string | null, fallback: T): T => {
+const parseStored = <T,>(key: string, value: string | null, fallback: T): T => {
   if (!value) return fallback;
-  try { return JSON.parse(value) as T; } catch { return fallback; }
+  try { return JSON.parse(value) as T; } catch (error) {
+    warnStorage(`Could not parse ${key}; using defaults.`, error);
+    return fallback;
+  }
 };
 
 export function AppProvider({ children }: PropsWithChildren) {
@@ -47,17 +52,17 @@ export function AppProvider({ children }: PropsWithChildren) {
       const stored = Object.fromEntries(entries);
       const storedIdentity = stored[STORAGE.identity];
       if (storedIdentity) {
-        const identity = parseStored(storedIdentity, { hasIdentity: false, profile: mockCurrentUser });
+        const identity = parseStored(STORAGE.identity, storedIdentity, { hasIdentity: false, profile: mockCurrentUser });
         setHasIdentity(identity.hasIdentity);
         setCurrentUser(identity.profile);
       }
       const storedConversations = stored[STORAGE.conversations];
       const storedMessages = stored[STORAGE.messages];
       const storedGroups = stored[STORAGE.groups];
-      if (storedConversations) setConversations(sortConversations(parseStored<Conversation[]>(storedConversations, initialConversations)));
-      if (storedMessages) setMessages(parseStored<Message[]>(storedMessages, initialMessages));
-      if (storedGroups) setGroups(parseStored<Group[]>(storedGroups, []));
-    }).catch(() => undefined).finally(() => setHydrated(true));
+      if (storedConversations) setConversations(sortConversations(parseStored<Conversation[]>(STORAGE.conversations, storedConversations, initialConversations)));
+      if (storedMessages) setMessages(parseStored<Message[]>(STORAGE.messages, storedMessages, initialMessages));
+      if (storedGroups) setGroups(parseStored<Group[]>(STORAGE.groups, storedGroups, []));
+    }).catch(error => warnStorage('Could not load local app data.', error)).finally(() => setHydrated(true));
   }, []);
 
   useEffect(() => {
@@ -67,7 +72,7 @@ export function AppProvider({ children }: PropsWithChildren) {
       [STORAGE.conversations, JSON.stringify(conversations)],
       [STORAGE.messages, JSON.stringify(messages)],
       [STORAGE.groups, JSON.stringify(groups)],
-    ]).catch(() => undefined);
+    ]).catch(error => warnStorage('Could not save local app data.', error));
   }, [hydrated, hasIdentity, currentUser, conversations, messages, groups]);
 
   const createIdentity = (displayName: string, rawUsername: string) => {
@@ -82,7 +87,7 @@ export function AppProvider({ children }: PropsWithChildren) {
     if (!clean || !conversations.some(item => item.id === conversationId)) return;
     const timestamp = Date.now();
     setMessages(items => [...items, {
-      id: `message-${timestamp}`, conversationId, senderId: 'me', type,
+      id: createId('message'), conversationId, senderId: 'me', type,
       content: clean, createdAt: timestamp, status: 'sent', replyTo,
     }]);
     setConversations(items => sortConversations(items.map(item => item.id === conversationId ? {
@@ -96,7 +101,7 @@ export function AppProvider({ children }: PropsWithChildren) {
     if (existing) return existing.id;
     const user = people.find(item => item.id === userId);
     if (!user) return null;
-    const id = `${userId}-chat`;
+    const id = createId('conversation');
     const timestamp = Date.now();
     setConversations(items => sortConversations([{
       id, type: 'direct', title: user.displayName, avatar: user.avatar,
@@ -108,7 +113,7 @@ export function AppProvider({ children }: PropsWithChildren) {
 
   const createGroup = (name: string, memberIds: string[]) => {
     const timestamp = Date.now();
-    const id = `group-${timestamp}`;
+    const id = createId('group');
     const group: Group = { id, name, avatar: name.slice(0, 2), memberIds: ['me', ...memberIds], ownerId: 'me' };
     setGroups(items => [...items, group]);
     setConversations(items => sortConversations([{
