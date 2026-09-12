@@ -1,0 +1,15 @@
+[Unit]
+Description=Milo static web app
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/milo/current
+ExecStart=/usr/bin/python3 /opt/milo/server.py --port 80
+Restart=always
+RestartSec=3
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

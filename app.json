@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "Milo",
+    "slug": "milo",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "milo",
+    "plugins": ["expo-router"],
+    "ios": { "supportsTablet": true, "bundleIdentifier": "social.milo.app" },
+    "android": { "package": "social.milo.app", "adaptiveIcon": { "backgroundColor": "#F4F2ED" } },
+    "web": { "bundler": "metro" },
+    "experiments": { "typedRoutes": true }
+  }
+}
